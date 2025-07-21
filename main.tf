@@ -79,8 +79,8 @@ resource "aws_ami_from_instance" "main" {
 }
 
 
-# delete the catalogue service instance
-resource "terraform_data" "main" {
+# delete the service instance
+resource "terraform_data" "component_delete" {
   triggers_replace = [
     aws_instance.main.id
   ]
@@ -92,7 +92,7 @@ resource "terraform_data" "main" {
   depends_on = [aws_ami_from_instance.main]
 }
 
-# create launch template for catalogue service
+# create launch template for the service
 resource "aws_launch_template" "main" {
   name_prefix   = "${var.project}-${var.environment}-${var.component}-launch-template"
   image_id      = aws_ami_from_instance.main.id
