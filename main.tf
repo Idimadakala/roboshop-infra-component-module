@@ -1,19 +1,19 @@
 # target group is our services
 resource "aws_lb_target_group" "main" {
   name     = "${var.project}-${var.environment}-${var.component}"
-  port     = var.target_group_port
+  port     = local.tg_port
   protocol = "HTTP"
   vpc_id   = local.vpc_id
   deregistration_delay = 120 # wait time before deregistering the instance
   
   health_check {
-    path                = "/health"
+    path                = local.health_check_path
     interval            = 5
     timeout             = 2
     healthy_threshold   = 2
     unhealthy_threshold = 3
     matcher             = "200-299"
-    port                = 8080
+    port                = local.tg_port
   }
   tags = merge(local.common_tags, 
   {
@@ -80,25 +80,25 @@ resource "aws_ami_from_instance" "main" {
 
 
 # delete the catalogue service instance
-resource "terraform_data" "catalogue_delete" {
+resource "terraform_data" "main" {
   triggers_replace = [
-    aws_instance.catalogue_service.id
+    aws_instance.main.id
   ]
   
   # make sure you have aws configure in your laptop
   provisioner "local-exec" {
-    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue_service.id}"
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.main.id}"
   }
-  depends_on = [aws_ami_from_instance.catalogue]
+  depends_on = [aws_ami_from_instance.main]
 }
 
 # create launch template for catalogue service
-resource "aws_launch_template" "catalogue" {
-  name_prefix   = "${var.project}-${var.environment}-catalogue-launch-template"
-  image_id      = aws_ami_from_instance.catalogue.id
+resource "aws_launch_template" "main" {
+  name_prefix   = "${var.project}-${var.environment}-${var.component}-launch-template"
+  image_id      = aws_ami_from_instance.main.id
   instance_type = var.instance_type
   #key_name      = var.key_name
-  vpc_security_group_ids = [local.catalogue_sg_id]
+  vpc_security_group_ids = [local.sg_id]
   instance_initiated_shutdown_behavior = "terminate"
   update_default_version = true # each time you update, new version will become default
   
