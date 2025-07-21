@@ -17,7 +17,7 @@ resource "aws_lb_target_group" "main" {
   }
   tags = merge(local.common_tags, 
   {
-    Name = "${var.project}-${var.environment}-${var.target_group_name}"
+    Name = "${var.project}-${var.environment}-${var.component}-tg"
   })
 }
 
