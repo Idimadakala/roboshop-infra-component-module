@@ -6,14 +6,6 @@ variable "environment" {
   default = "dev"
 }
 
-variable "target_group_name" {
-  default = "catalogue-tg"
-}
-
-variable "target_group_port" {
-  default = 8080
-}
-
 variable "instance_type" {
   default = "t3.micro"
 }
@@ -27,5 +19,9 @@ variable "zone_name" {
 }
 
 variable "component" {
+  # provide the component name from the source module
+}
 
+variable "rule_priority" {
+    # provide the rule priority value from the source module
 }
