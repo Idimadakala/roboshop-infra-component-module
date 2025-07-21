@@ -208,7 +208,7 @@ resource "aws_lb_listener_rule" "main" {
 
   condition {
     host_header {
-      values = ["${var.component}.backend-${var.environment}.${var.zone_name}"]
+      values = local.rule_header_url
     }
   }
 }
