@@ -198,7 +198,7 @@ resource "aws_autoscaling_policy" "main" {
 
 # create listener rule for catalogue service
 resource "aws_lb_listener_rule" "main" {
-  listener_arn = local.backend_alb_listener_arn
+  listener_arn = local.alb_listener_arn
   priority     = var.rule_priority # set the priority for the rule
 
   action {
