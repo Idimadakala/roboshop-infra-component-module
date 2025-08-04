@@ -1,4 +1,5 @@
-# target group is our services
+# target group is for our services
+# Provides a Target Group resource for use with Load Balancer resources.
 resource "aws_lb_target_group" "main" {
   name     = "${var.project}-${var.environment}-${var.component}"
   port     = local.tg_port
@@ -208,7 +209,7 @@ resource "aws_lb_listener_rule" "main" {
 
   condition {
     host_header {
-      values = local.rule_header_url
+      values = [local.rule_header_url] # e.g., frontend.backend-dev.jsprajampeta.org
     }
   }
 }
