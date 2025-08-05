@@ -150,8 +150,8 @@ resource "aws_autoscaling_group" "main" {
   vpc_zone_identifier  = local.roboshop_private_subnet_ids
 
   health_check_grace_period = 90 # time to wait before checking health of instances
-  #health_check_type         = "EC2" # can be ELB or EC2,
-  health_check_type         = "ELB"
+  #health_check_type         = "EC2" # can be ELB or EC2, # controls how health checks are performed
+  health_check_type         = "ELB" # use ELB for load balancer health check
 
  dynamic "tag" {
     for_each = merge(
@@ -182,7 +182,7 @@ resource "aws_autoscaling_group" "main" {
   }
 }
 
-# autoscaling policy for catalogue service
+# autoscaling policy for services
 resource "aws_autoscaling_policy" "main" {
   name                   = "${var.project}-${var.environment}-${var.component}-asg-policy"
   autoscaling_group_name = aws_autoscaling_group.main.name # associate with ASG
@@ -197,7 +197,7 @@ resource "aws_autoscaling_policy" "main" {
   }
 }
 
-# create listener rule for catalogue service
+# create listener rule for services
 resource "aws_lb_listener_rule" "main" {
   listener_arn = local.alb_listener_arn
   priority     = var.rule_priority # set the priority for the rule
@@ -209,7 +209,7 @@ resource "aws_lb_listener_rule" "main" {
 
   condition {
     host_header {
-      values = [local.rule_header_url] # e.g., frontend.backend-dev.jsprajampeta.org
+      values = [local.rule_header_url] # e.g., catalogue.backend-dev.jsprajampeta.org
     }
   }
 }
